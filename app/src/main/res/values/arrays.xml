@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="module_names">
+        <item>Grundlagen der Informatik</item>
+        <item>Rechnerarchitektur</item>
+        <item>Algorithmen &amp; Datenstrukturen</item>
+        <item>Objektorientierte Programmierung</item>
+        <item>Betriebssysteme</item>
+    </string-array>
+
+    <string-array name="year">
+        <item>Sommersemester 2018</item>
+        <item>Sommersemester 2017</item>
+        <item>Sommersemester 2016</item>
+        <item>Sommersemester 2015</item>
+        <item>Sommersemester 2014</item>
+        <item>Sommersemester 2013</item>
+        <item>Sommersemester 2012</item>
+    </string-array>
+</resources>
