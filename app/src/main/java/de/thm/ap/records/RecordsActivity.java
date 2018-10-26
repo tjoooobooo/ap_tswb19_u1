@@ -2,6 +2,7 @@ package de.thm.ap.records;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -66,7 +67,6 @@ public class RecordsActivity extends AppCompatActivity {
                 builder.setNeutralButton(R.string.close,null);
                 builder.show();
                 return true;
-
         }
         return super.onOptionsItemSelected(item);
     }

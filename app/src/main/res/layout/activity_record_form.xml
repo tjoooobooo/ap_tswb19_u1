@@ -49,14 +49,15 @@
 
         <CheckBox
             android:id="@+id/summer"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:maxLength="10" />
+            android:maxLength="14"
+            android:text = "@string/sommersemester"/>
 
         <Spinner
             android:id="@+id/years"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1" />
     </LinearLayout>
@@ -86,17 +87,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textNoSuggestions"
-        android:maxLength="3"
-        android:autofillHints="" />
+        android:maxLength="3" />
 
     <CheckBox
         android:id="@+id/gewicht"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:layout_weight="1"
-        android:maxLength="30"
+        android:maxLength="35"
         android:text="@string/gewichtung" />
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/save"

@@ -8,13 +8,13 @@
         <item>Betriebssysteme</item>
     </string-array>
 
-    <string-array name="year">
-        <item>Sommersemester 2018</item>
-        <item>Sommersemester 2017</item>
-        <item>Sommersemester 2016</item>
-        <item>Sommersemester 2015</item>
-        <item>Sommersemester 2014</item>
-        <item>Sommersemester 2013</item>
-        <item>Sommersemester 2012</item>
-    </string-array>
+    <integer-array name="year">
+        <item>2018</item>
+        <item>2017</item>
+        <item>2016</item>
+        <item>2015</item>
+        <item>2014</item>
+        <item>2013</item>
+        <item>2012</item>
+    </integer-array>
 </resources>

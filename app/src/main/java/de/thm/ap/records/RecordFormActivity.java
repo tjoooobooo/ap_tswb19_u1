@@ -49,10 +49,9 @@ public class RecordFormActivity extends AppCompatActivity{
                         android.R.layout.simple_dropdown_item_1line, names);
         moduleName.setAdapter(adapter);
         // configure year spinner
-        ArrayAdapter<String> adapter2 =
+        ArrayAdapter<Integer> adapter2 =
                 new ArrayAdapter<>(this,
                         android.R.layout.simple_spinner_dropdown_item, getYears());
-        year.setPrompt("Sommersemester");
         year.setAdapter(adapter2);
     }
 
@@ -102,7 +101,7 @@ public class RecordFormActivity extends AppCompatActivity{
             if(noNumber)markProzent.setError(getString(R.string.mark_not_number));
             else markProzent.setError(getString(R.string.mark_not_empty));
             isValid = false;
-        } else if(record.getMark() > 100 || record.getMark() < 0) {
+        } else if(record.getMark() > 100 || record.getMark() < 50) {
             markProzent.setError(getString(R.string.mark_not_valid));
             isValid = false;
         }
@@ -135,9 +134,13 @@ public class RecordFormActivity extends AppCompatActivity{
 
 
 
-    private String[] getYears() {
-        //return Arrays.stream(getResources().getIntArray(R.array.year)).boxed().toArray(Integer[]::new);
-        return getResources().getStringArray(R.array.year);
+    private Integer[] getYears() {
+        int[] little = getResources().getIntArray(R.array.year);
+        Integer[] big = new Integer[little.length];
+        for(int i = 0; i < little.length; i++) {
+            big[i] = new Integer(little[i]);
+        }
+        return big;
     }
 
 
