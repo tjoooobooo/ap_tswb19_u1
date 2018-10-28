@@ -10,7 +10,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
         android:text="@string/module_num" />
 
     <EditText
@@ -24,7 +23,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
+
         android:text="@string/module_name" />
 
     <AutoCompleteTextView
@@ -38,13 +37,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
         android:text="@string/semester" />
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
         android:orientation="horizontal">
 
         <CheckBox
@@ -65,7 +62,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
         android:text="@string/crp" />
 
     <EditText
@@ -79,7 +75,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
         android:text="@string/note" />
 
     <EditText
@@ -93,7 +88,6 @@
         android:id="@+id/gewicht"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp"
         android:layout_weight="1"
         android:maxLength="35"
         android:text="@string/gewichtung" />
@@ -106,7 +100,6 @@
         android:id="@+id/save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
         android:onClick="onSave"
         android:padding="20dp"
         android:text="@string/save" />

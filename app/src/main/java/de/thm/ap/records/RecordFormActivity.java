@@ -1,5 +1,8 @@
 package de.thm.ap.records;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -10,6 +13,9 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import de.thm.ap.records.model.Record;
@@ -20,6 +26,9 @@ public class RecordFormActivity extends AppCompatActivity{
     private AutoCompleteTextView moduleName;
     private CheckBox weight, summerTerm;
     private Spinner year;
+
+    private List<Record> records = null;
+    private Integer record_ex = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +62,11 @@ public class RecordFormActivity extends AppCompatActivity{
                 new ArrayAdapter<>(this,
                         android.R.layout.simple_spinner_dropdown_item, getYears());
         year.setAdapter(adapter2);
+
+        Intent intent = getIntent();
+        record_ex = intent.getIntExtra("selected_record",-1);
+        records = new RecordDAO(this).findAll();
+        if(record_ex > 0) setFields(records.get(record_ex-1));
     }
 
     public void onSave(View view) {
@@ -108,7 +122,6 @@ public class RecordFormActivity extends AppCompatActivity{
         if (isValid) {
             record.setHalfWeighted(weight.isChecked());
             record.setSummerTerm(summerTerm.isChecked());
-            // TODO casten
             int yearInt = 0;
             try {
                 yearInt = Integer.parseInt(year.getSelectedItem().toString().replace("Sommersemester ", ""));
@@ -116,8 +129,12 @@ public class RecordFormActivity extends AppCompatActivity{
                 // Exception
             }
             record.setYear(yearInt);
+            RecordDAO recordDAO = new RecordDAO(this);
             // persist record and finish activity
-            new RecordDAO(this).persist(record);
+            if(record_ex > 0){
+                record.setId(record_ex);
+                recordDAO.update(record);
+            } else recordDAO.persist(record);
             finish();
         }
     }
@@ -132,15 +149,29 @@ public class RecordFormActivity extends AppCompatActivity{
         return super.onOptionsItemSelected(item);
     }
 
-
-
     private Integer[] getYears() {
         int[] little = getResources().getIntArray(R.array.year);
         Integer[] big = new Integer[little.length];
         for(int i = 0; i < little.length; i++) {
-            big[i] = new Integer(little[i]);
+            big[i] = little[i];
         }
         return big;
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void setFields(Record record){
+        moduleNum.setText(record.getModuleNum());
+        creditPoints.setText(record.getCrp().toString());
+        markProzent.setText(record.getMark().toString());
+        moduleName.setText(record.getModuleName());
+        if(record.isHalfWeighted()) weight.performClick();
+        if(record.isSummerTerm()) summerTerm.performClick();
+        int pos = 0;
+        int[] years = getResources().getIntArray(R.array.year);
+        for(int i = 0; i < years.length;i++) {
+            if(record.getYear().equals(years[i])) pos = i;
+        }
+        year.setSelection(pos);
     }
 
 

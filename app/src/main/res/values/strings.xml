@@ -24,4 +24,11 @@
     <string name="mark_not_number">Note muss eine Zahl sein!</string>
     <string name="mark_not_valid">Note muss zwischen 50 und 100% liegen!</string>
     <string name="sommersemester">Sommersemester</string>
+
+
+    <string name="test">Test-String</string>
+    <string name="send_email">Leistungen als E-Mail versenden</string>
+    <string name="delete_records">Leistungen löschen</string>
+    <string name="delete">Löschen</string>
+    <string name="cancel">Abbrechen</string>
 </resources>

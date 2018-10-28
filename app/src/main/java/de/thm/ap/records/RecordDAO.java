@@ -47,9 +47,9 @@ public class RecordDAO {
     public boolean update(Record record) {
         if(record.getId() != null){
             if(findById(record.getId()).isPresent()){
-                for(Record recordTmp : records) {
-                    if(recordTmp.getId().equals(record.getId())){
-                        records.set(recordTmp.getId(),record);
+                for(int i = 0; i < records.size(); i++) {
+                    if(records.get(i).getId().equals(record.getId())){
+                        records.set(i,record);
                     }
                 }
             }
@@ -98,5 +98,15 @@ public class RecordDAO {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    boolean deleteRecords(List<Record> recordsToDelete){
+        for(Record record : recordsToDelete){
+            if(findById(record.getId()).isPresent()){
+                records.remove(findById(record.getId()).get());
+            } else return false;
+        }
+        saveRecords();
+        return true;
     }
 }

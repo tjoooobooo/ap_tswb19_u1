@@ -23,7 +23,7 @@ public class Stats {
     }
 
     public int getCrpToEnd() {
-        return crpEnd - getSumCrps();
+        return (crpEnd - getSumCrps() < 0? 0 : crpEnd - getSumCrps());
     }
 
     public int getSumHalfWeighted() {
