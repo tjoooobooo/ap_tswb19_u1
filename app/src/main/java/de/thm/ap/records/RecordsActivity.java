@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +26,7 @@ public class RecordsActivity extends AppCompatActivity {
 
     private ListView recordsListView;
     private List<Record> records = null;
+    ArrayAdapter<Record> adapterRecord = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +49,9 @@ public class RecordsActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         records = new RecordDAO(this).findAll();
-        ArrayAdapter<Record> adapter = new ArrayAdapter<>(this,
+        adapterRecord = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_activated_1, records);
-        recordsListView.setAdapter(adapter);
+        recordsListView.setAdapter(adapterRecord);
         recordsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -132,6 +132,11 @@ public class RecordsActivity extends AppCompatActivity {
                 //updates nachdem modus beendet wird
             }
         });
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
     }
 
     @Override
