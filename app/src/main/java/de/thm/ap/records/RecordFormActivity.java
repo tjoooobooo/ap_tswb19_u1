@@ -27,7 +27,6 @@ public class RecordFormActivity extends AppCompatActivity{
     private CheckBox weight, summerTerm;
     private Spinner year;
 
-    private List<Record> records = null;
     private Integer record_ex = null;
 
     @Override
@@ -62,11 +61,10 @@ public class RecordFormActivity extends AppCompatActivity{
                 new ArrayAdapter<>(this,
                         android.R.layout.simple_spinner_dropdown_item, getYears());
         year.setAdapter(adapter2);
-
         Intent intent = getIntent();
         record_ex = intent.getIntExtra("selected_record",-1);
-        records = new RecordDAO(this).findAll();
-        if(record_ex > 0) setFields(records.get(record_ex-1));
+        List<Record> records = new RecordDAO(this).findAll();
+        if(record_ex > 0) setFields(records.get(record_ex-2));
     }
 
     public void onSave(View view) {
@@ -74,16 +72,19 @@ public class RecordFormActivity extends AppCompatActivity{
         Boolean noNumber = false;
         // validate user input
         boolean isValid = true;
+        // ModulName validieren---------------------------------------------------------------------
         record.setModuleName(moduleName.getText().toString().trim());
         if ("".equals(record.getModuleName())) {
             moduleName.setError(getString(R.string.module_name_not_empty));
             isValid = false;
         }
+        //ModulNummer validieren--------------------------------------------------------------------
         record.setModuleNum(moduleNum.getText().toString());
         if("".equals(record.getModuleNum())){
             moduleNum.setError(getString(R.string.module_num_not_empty));
             isValid = false;
         }
+        // Credit points validieren-----------------------------------------------------------------
         Integer crp = null;
         if(!"".equals(creditPoints.getText().toString())){
             try {
@@ -98,10 +99,14 @@ public class RecordFormActivity extends AppCompatActivity{
             else creditPoints.setError(getString(R.string.credit_points_not_empty));
             isValid = false;
             noNumber = false;
-        } else if(record.getCrp() < 0){
+        } else if(record.getCrp() < 0 ){
             creditPoints.setError(getString(R.string.credit_points_not_valid));
             isValid = false;
+        } else if(record.getCrp() > 15) {
+            creditPoints.setError(getString(R.string.credit_points_to_big));
+            isValid = false;
         }
+        // Note validieren--------------------------------------------------------------------------
         Integer mark = null;
         if(!"".equals(markProzent.getText().toString())){
             try {
@@ -115,10 +120,11 @@ public class RecordFormActivity extends AppCompatActivity{
             if(noNumber)markProzent.setError(getString(R.string.mark_not_number));
             else markProzent.setError(getString(R.string.mark_not_empty));
             isValid = false;
-        } else if(record.getMark() > 100 || record.getMark() < 50) {
+        } else if(record.getMark() > 100) {
             markProzent.setError(getString(R.string.mark_not_valid));
             isValid = false;
         }
+        // Checken, ob es ein Fehler bei der Eingabe gab--------------------------------------------
         if (isValid) {
             record.setHalfWeighted(weight.isChecked());
             record.setSummerTerm(summerTerm.isChecked());
@@ -173,6 +179,4 @@ public class RecordFormActivity extends AppCompatActivity{
         }
         year.setSelection(pos);
     }
-
-
 }

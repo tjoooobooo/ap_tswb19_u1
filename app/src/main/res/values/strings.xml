@@ -20,9 +20,10 @@
     <string name="credit_points_not_empty">Credit Points dürfen nicht leer sein!</string>
     <string name="credit_points_not_number">Credit Points müssen eine Zahl sein!</string>
     <string name="credit_points_not_valid">Credit Points müssen eine positive Zahl sein!</string>
+    <string name="credit_points_to_big">Credit Points können nur bis max. 15 gehen!</string>
     <string name="mark_not_empty">Note darf nicht leer sein!</string>
     <string name="mark_not_number">Note muss eine Zahl sein!</string>
-    <string name="mark_not_valid">Note muss zwischen 50 und 100% liegen!</string>
+    <string name="mark_not_valid">Note kann nicht über 100% liegen!</string>
     <string name="sommersemester">Sommersemester</string>
 
 

@@ -1,5 +1,7 @@
 package de.thm.ap.records;
 
+import android.support.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,25 +10,25 @@ import de.thm.ap.records.model.Record;
 public class Stats {
 
     List<Record> records = new ArrayList<>();
-    int sumCrps = 0;
-    int sumHalfWeighted = 0;
-    int avarageMark = 0;
-    final int crpEnd = 180;
+    private int sumCrps = 0;
+    private int sumHalfWeighted = 0;
+    private int avarageMark = 0;
 
-    public Stats(List<Record> records){
+    Stats(List<Record> records){
         this.records = records;
     }
 
-    public int getSumCrps() {
+    int getSumCrps() {
         for(Record record : records) sumCrps += record.getCrp();
         return sumCrps;
     }
 
-    public int getCrpToEnd() {
+    int getCrpToEnd() {
+        int crpEnd = 180;
         return (crpEnd - getSumCrps() < 0? 0 : crpEnd - getSumCrps());
     }
 
-    public int getSumHalfWeighted() {
+    int getSumHalfWeighted() {
         for(Record record : records) {
             if(record.isHalfWeighted())
             sumHalfWeighted++;
@@ -34,19 +36,34 @@ public class Stats {
         return sumHalfWeighted;
     }
 
-    public int getAverageMark() {
-        int weight = 0;
+    int getAverageMark() {
+        int points = 0;
         for(Record record : records) {
-            if(record.isHalfWeighted()) {
-                avarageMark += (record.getMark() * record.getCrp() * 0.5);
-                weight += 0.5 * record.getCrp();
-            }
-            else {
-                avarageMark += record.getMark() * record.getCrp();
-                weight += 1 * record.getCrp();
+            if(record.getMark() >= 50){
+                if(record.isHalfWeighted()) {
+                    avarageMark += (record.getMark() * record.getCrp() * 0.5);
+                    points += 0.5 * record.getCrp();
+                } else {
+                    avarageMark += record.getMark() * record.getCrp();
+                    points += record.getCrp();
+                }
             }
         }
-        avarageMark = avarageMark/weight;
+        if(points != 0) {
+            avarageMark = avarageMark/points;
+        } else avarageMark = 0;
         return avarageMark;
+    }
+
+    @NonNull
+    public String toString(){
+        String out = "Leistungen " + records.size() + "\n" +
+                "50% Leistungen " + getSumHalfWeighted() + "\n" +
+                "Summe Crp " + getSumCrps() + "\n" +
+                "Crp bis Ziel " + getCrpToEnd() + "\n" +
+                "Durchschnitt " + getAverageMark() + "%";
+        if(avarageMark != 0) {
+            return out;
+        } else return "Keine Leistungen vorhanden";
     }
 }
