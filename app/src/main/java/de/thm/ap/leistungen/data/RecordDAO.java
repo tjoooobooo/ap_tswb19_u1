@@ -1,35 +1,38 @@
 package de.thm.ap.leistungen.data;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
+import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
+
 import java.util.List;
 import java.util.Optional;
 
 import de.thm.ap.leistungen.model.Record;
 
+import static android.arch.persistence.room.OnConflictStrategy.IGNORE;
+import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
+
+@Dao
 public interface RecordDAO {
-    public List<Record> findAll();
 
-    public Optional<Record> findById(int id);
+    @Query("SELECT * FROM record")
+    LiveData<List<Record>> findAll();
 
-    /**
-     * Ersetzt das übergebene {@link Record} Objekt mit einem bereits
-     gespeicherten {@link Record} Objekt mit gleicher id.
-     *
-     * @param record
-     * @return true = update ok, false = kein {@link Record} Objekt mit gleicher
-    id im Speicher gefunden
-     */
-    public boolean update(Record record);
+    @Query("SELECT * FROM record WHERE id = :id")
+    public List<Record> findById(int id);
 
-    /**
-     * Persistiert das übergebene {@link Record} Objekt und liefert die neue id
-     zurück.
-     *
-     * @param record
-     * @return neue record id
-     */
-    public int persist(Record record);
+    @Update(onConflict = REPLACE)
+    int update(Record record);
 
-    public void initRecords();
+    @Insert(onConflict = IGNORE)
+    long persist(Record record);
 
-    public void saveRecords();
+    @Delete
+    void delete(Record record);
+
+    @Delete
+    void deleteAll(Record... records);
 }

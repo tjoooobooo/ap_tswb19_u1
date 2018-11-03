@@ -1,5 +1,6 @@
 package de.thm.ap.leistungen.data;
 
+import android.arch.lifecycle.LiveData;
 import android.content.Context;
 
 import java.io.File;
@@ -16,7 +17,7 @@ import de.thm.ap.leistungen.model.Record;
 public class RecordFileDAO implements RecordDAO {
     private static String FILE_NAME = "records.obj";
     private Context ctx;
-    private List<Record> records;
+    private LiveData<List<Record>> records;
     private int nextId = 1;
     private static boolean isChanged = false;
     // TODO Request Intent
@@ -24,63 +25,64 @@ public class RecordFileDAO implements RecordDAO {
         this.ctx = ctx;
         initRecords();
     }
-    public List<Record> findAll() {
+    public LiveData<List<Record>> findAll() {
         return records;
     }
 
-    public Optional<Record> findById(int id) {
-        for(Record record : records){
+    @Override
+    public List<Record> findById(int id) {
+        List<Record> listRecord = new ArrayList<>();
+        for(Record record : records.getValue()){
             if(record.getId().equals(id)){
-                return Optional.ofNullable(record);
+                listRecord.add(record);
             }
         }
-        return Optional.empty();
+        return listRecord;
     }
-    /**
-     * Ersetzt das übergebene {@link Record} Objekt mit einem bereits
-     gespeicherten {@link Record} Objekt mit gleicher id.
-     *
-     * @param record
-     * @return true = update ok, false = kein {@link Record} Objekt mit gleicher
-    id im Speicher gefunden
-     */
-    public boolean update(Record record) {
+
+    public int update(Record record) {
         if(record.getId() != null){
-            if(findById(record.getId()).isPresent()){
-                for(int i = 0; i < records.size(); i++) {
-                    if(records.get(i).getId().equals(record.getId())){
-                        records.set(i,record);
+            if(findById(record.getId()).size() > 0){
+                for(int i = 0; i < records.getValue().size(); i++) {
+                    if(records.getValue().get(i).getId().equals(record.getId())){
+                        records.getValue().set(i,record);
                     }
                 }
             }
             saveRecords();
-            return true;
+            return 1;
         } else {
-            return false;
+            return 0;
         }
     }
-    /**
-     * Persistiert das übergebene {@link Record} Objekt und liefert die neue id
-     zurück.
-     *
-     * @param record
-     * @return neue record id
-     */
-    public int persist(Record record) {
+
+    public long persist(Record record) {
         record.setId(nextId++);
-        records.add(record);
+        records.getValue().add(record);
         saveRecords();
         return record.getId();
     }
+
+    @Override
+    public void delete(Record record) {
+        if(findById(record.getId()).size() > 0) records.getValue().removeAll(findById(record.getId()));
+        saveRecords();
+    }
+
+    @Override
+    public void deleteAll(Record... records) {
+        for(Record record : records) delete(record);
+    }
+
     @SuppressWarnings("unchecked")
     public void initRecords() {
         File f = ctx.getFileStreamPath(FILE_NAME);
         if (f.exists()) {
             try (FileInputStream in = ctx.openFileInput(FILE_NAME)) {
                 Object obj = obj = new ObjectInputStream(in).readObject();
-                records = (List<Record>) obj;
+                records = (LiveData<List<Record>>) obj;
 // init next id
-                records.stream()
+                records.getValue().stream()
                         .mapToInt(Record::getId)
                         .max()
                         .ifPresent(id -> nextId = id + 1);
@@ -88,7 +90,7 @@ public class RecordFileDAO implements RecordDAO {
                 e.printStackTrace();
             }
         } else {
-            records = new ArrayList<>();
+            records = null;
         }
     }
     public void saveRecords() {
@@ -99,17 +101,6 @@ public class RecordFileDAO implements RecordDAO {
             e.printStackTrace();
         }
     }
-
-    public boolean deleteRecords(List<Record> recordsToDelete){
-        for(Record record : recordsToDelete){
-            if(findById(record.getId()).isPresent()){
-                records.remove(findById(record.getId()).get());
-            } else return false;
-        }
-        saveRecords();
-        return true;
-    }
-
     public boolean isChanged(){ return isChanged; }
 
     public void revertIsChanged(){ isChanged = !isChanged; }

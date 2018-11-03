@@ -1,11 +1,16 @@
 package de.thm.ap.leistungen.model;
 
-import java.io.Serializable;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
 
+import java.io.Serializable;
+@Entity
 public class Record implements Serializable {
-    private Integer id, crp, mark, year;
+    @PrimaryKey
+    private Integer id;
+    private Integer crp, mark, year;
     private String moduleNum, moduleName;
-    private Boolean summerTerm, halfWeighted, hasPassed, hasMark;
+    private boolean summerTerm, halfWeighted, hasPassed, hasMark;
 
     public Record(String moduleNum, String moduleName, Integer year, Boolean summerTerm, Boolean halfWeighted, Integer crp, Integer mark){
         id = null;
@@ -93,11 +98,11 @@ public class Record implements Serializable {
 
     public void setModuleName(String moduleName) {this.moduleName = moduleName; }
 
-    public void setNotPassed(){ hasPassed = false; }
+    public void setHasPassed(boolean bool){ hasPassed = bool; }
 
-    public boolean passed(){ return hasPassed; }
+    public boolean hasPassed(){ return hasPassed; }
 
-    public void setNoMark(){ hasMark = false; }
+    public void setHasMark(boolean bool){ hasMark = bool; }
 
     public boolean hasMark() { return hasMark;}
 

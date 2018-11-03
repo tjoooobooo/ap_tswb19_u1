@@ -1,6 +1,8 @@
 package de.thm.ap.leistungen;
 
 import android.app.AlertDialog;
+import android.arch.lifecycle.LiveData;
+import android.arch.persistence.room.Room;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,14 +14,16 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.List;
+import java.util.concurrent.Executors;
 
-import de.thm.ap.leistungen.data.RecordFileDAO;
+import de.thm.ap.leistungen.data.AppDatabase;
 import de.thm.ap.leistungen.model.Record;
 
 public class RecordsActivity extends AppCompatActivity {
 
     private List<Record> records = null;
     ArrayAdapter<Record> adapterRecord = null;
+    private ListView recordsListView = null;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -34,19 +38,15 @@ public class RecordsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record);
 
-        ListView recordsListView = findViewById(R.id.records_list);
+        recordsListView = findViewById(R.id.records_list);
         recordsListView
                 .setEmptyView(findViewById(R.id.records_list_empty));
 
-        records = new RecordFileDAO(this).findAll();
-        adapterRecord = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_activated_1, records);
-        recordsListView.setAdapter(adapterRecord);
         recordsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent(view.getContext(), RecordFormActivity.class);
-                i.putExtra("selected_record",records.get(position).getId());
+                i.putExtra("selected_record",((Record) recordsListView.getItemAtPosition(position)).getId());
                 startActivity(i);
             }
         });
@@ -55,15 +55,18 @@ public class RecordsActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onResume(){
-        super.onResume();
-        RecordFileDAO recordFileDAO = new RecordFileDAO(this);
-        if(recordFileDAO.isChanged()){
-            adapterRecord.clear();
-            records = recordFileDAO.findAll();
-            adapterRecord.addAll(records);
-            recordFileDAO.revertIsChanged();
-        }
+    public void onStart(){
+        super.onStart();
+        // Datenbank -------------------------------------------------------------------------------
+        Room.databaseBuilder(this, AppDatabase.class, "app-database").build();
+        AppDatabase.getDb(this).recordDAO().findAll().observe(this,
+                records -> {
+                    this.records = records;
+                    adapterRecord = new ArrayAdapter<>(this, android.R.layout.simple_list_item_activated_1, records);
+                    recordsListView.setAdapter(adapterRecord);
+                }
+        );
+        //------------------------------------------------------------------------------------------
     }
 
     @Override

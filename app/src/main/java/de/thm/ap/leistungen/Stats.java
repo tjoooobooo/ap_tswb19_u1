@@ -20,7 +20,7 @@ public class Stats {
     int getSumCrps() {
         sumCrps = 0;
         for(Record record : records) {
-            if(record.passed())
+            if(record.hasPassed())
             sumCrps += record.getCrp();
         }
         return sumCrps;
@@ -44,7 +44,7 @@ public class Stats {
         int points = 0;
         avarageMark = 0;
         for(Record record : records) {
-            if(record.passed() && record.hasMark()){
+            if(record.hasPassed() && record.hasMark()){
                 if(record.isHalfWeighted()) {
                     avarageMark += (record.getMark() * record.getCrp() * 0.5);
                     points += 0.5 * record.getCrp();

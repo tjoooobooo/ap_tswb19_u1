@@ -1,21 +1,23 @@
 package de.thm.ap.leistungen;
 
 import android.app.AlertDialog;
+import android.arch.lifecycle.LifecycleOwner;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.AbsListView;
+import android.widget.ArrayAdapter;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
-import de.thm.ap.leistungen.data.RecordFileDAO;
+import de.thm.ap.leistungen.data.AppDatabase;
 import de.thm.ap.leistungen.model.Record;
 
 public class RecordsChoiceModeListener implements AbsListView.MultiChoiceModeListener {
@@ -23,9 +25,14 @@ public class RecordsChoiceModeListener implements AbsListView.MultiChoiceModeLis
     private List<Record> records = null;
     private int itemsChecked = 0;
     private List<Record> records_selected = new LinkedList<>();
-    private boolean isDeleted = false;
-    RecordsChoiceModeListener(Context context){
+    private boolean delete_finished = false;
+    RecordsChoiceModeListener(Context context) {
         this.context = context;
+        AppDatabase.getDb(context).recordDAO().findAll().observe((LifecycleOwner) context,
+                records -> {
+                    this.records = records;
+                }
+        );
     }
 
     @Override
@@ -33,6 +40,7 @@ public class RecordsChoiceModeListener implements AbsListView.MultiChoiceModeLis
         if(checked) itemsChecked++;
         else itemsChecked--;
         actionMode.setTitle(itemsChecked + " ausgewählt");
+        //TODO funktioniert löschen immer richtig? wird das richtige gelöscht wenn ids durcheinander
         if(checked) records_selected.add(records.get(position));
         else records_selected.remove(records.get(position));
     }
@@ -47,7 +55,6 @@ public class RecordsChoiceModeListener implements AbsListView.MultiChoiceModeLis
 
     @Override
     public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
-        records = new RecordFileDAO(context).findAll();
         return true;
     }
 
@@ -62,9 +69,21 @@ public class RecordsChoiceModeListener implements AbsListView.MultiChoiceModeLis
                 builder.setNegativeButton(R.string.delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        if(!new RecordFileDAO(context).deleteRecords(records_selected)) throw new RuntimeException("Löschen war nicht erfolgreich");
-                        records.removeAll(records_selected);
-                        isDeleted = true;
+                            Thread deleteThread = new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    for(Record r : records_selected) {
+                                        AppDatabase.getDb(context).recordDAO().delete(r);
+                                    }
+                                }
+                            });
+                            deleteThread.start();
+                        try {
+                            //waiting for Tread to finish
+                            deleteThread.join();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         actionMode.finish();
                     }
                 });
@@ -89,12 +108,7 @@ public class RecordsChoiceModeListener implements AbsListView.MultiChoiceModeLis
 
     @Override
     public void onDestroyActionMode(ActionMode actionMode) {
-        //updates nachdem modus beendet wird
-        if(isDeleted) new RecordFileDAO(context).revertIsChanged();
-        isDeleted = false;
         itemsChecked = 0;
-        records_selected = new LinkedList<>();
-        AppCompatActivity compat = (AppCompatActivity)context;
-        compat.recreate();
+        records_selected.clear();
     }
 }

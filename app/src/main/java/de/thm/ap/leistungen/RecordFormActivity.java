@@ -1,6 +1,7 @@
 package de.thm.ap.leistungen;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,8 +13,11 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Executors;
 
+import de.thm.ap.leistungen.data.AppDatabase;
 import de.thm.ap.leistungen.data.RecordFileDAO;
 import de.thm.ap.leistungen.model.Record;
 
@@ -61,8 +65,12 @@ public class RecordFormActivity extends AppCompatActivity{
         Intent intent = getIntent();
         record_ex = intent.getIntExtra("selected_record",-1);
         if(record_ex > 0) {
-            Optional<Record> r = new RecordFileDAO(this).findById(record_ex);
-            r.ifPresent(this::setFields);
+            Context ctx = this;
+            Executors.newSingleThreadExecutor()
+                    .submit(() -> {
+                        List<Record> recordsFilled = AppDatabase.getDb(ctx).recordDAO().findById(record_ex);
+                        for (Record r : recordsFilled) setFields(r);
+                    });
         }
     }
 
@@ -114,9 +122,10 @@ public class RecordFormActivity extends AppCompatActivity{
         }
         record.setMark(mark);
         if(record.getMark() == null){
-            record.setNoMark();
+            record.setHasMark(false);
         } else if(record.getMark() < 50){
-            record.setNotPassed();
+            //TODO set wenn bestanden bei änderung wichtig
+            record.setHasPassed(false);
         } else if(record.getMark() > 100) {
             markProzent.setError(getString(R.string.mark_not_valid));
             isValid = false;
@@ -132,13 +141,15 @@ public class RecordFormActivity extends AppCompatActivity{
                 // Exception
             }
             record.setYear(yearInt);
-            RecordFileDAO recordFileDAO = new RecordFileDAO(this);
-            recordFileDAO.revertIsChanged();
             // persist record and finish activity
             if(record_ex > 0){
                 record.setId(record_ex);
-                recordFileDAO.update(record);
-            } else recordFileDAO.persist(record);
+                Executors.newSingleThreadExecutor()
+                        .submit(() -> AppDatabase.getDb(this).recordDAO().update(record));
+            } else {
+                Executors.newSingleThreadExecutor()
+                        .submit(() -> AppDatabase.getDb(this).recordDAO().persist(record));
+            }
             finish();
         }
     }
