@@ -19,7 +19,6 @@ public class RecordFileDAO implements RecordDAO {
     private Context ctx;
     private LiveData<List<Record>> records;
     private int nextId = 1;
-    private static boolean isChanged = false;
     // TODO Request Intent
     public RecordFileDAO(Context ctx) {
         this.ctx = ctx;
@@ -101,7 +100,4 @@ public class RecordFileDAO implements RecordDAO {
             e.printStackTrace();
         }
     }
-    public boolean isChanged(){ return isChanged; }
-
-    public void revertIsChanged(){ isChanged = !isChanged; }
 }
