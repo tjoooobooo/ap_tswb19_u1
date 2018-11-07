@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".RecordsActivity">
+
+
+    <item
+        android:id="@+id/action_add"
+        android:icon="@drawable/ic_add_black_24dp"
+        app:showAsAction="ifRoom"
+        android:title="@string/add"/>
+    <item
+        android:id="@+id/action_delete"
+        android:icon="@drawable/ic_delete_black_24dp"
+        app:showAsAction="ifRoom"
+        android:title="@string/l_schen"/>
+    <item
+        android:id="@+id/get_all_records"
+        android:icon="@drawable/ic_autorenew_black_24dp"
+        app:showAsAction="ifRoom"
+        android:title="@string/get_all_Records"/>
+    <item
+        android:id="@+id/file_download"
+        android:icon="@drawable/ic_file_download_black_24dp"
+        app:showAsAction="ifRoom"
+        android:title="@string/download_csv_file"/>
+</menu>

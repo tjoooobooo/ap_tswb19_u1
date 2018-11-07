@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">testcontentprovider</string>
+    <string name="add">Leistung hinzufügen</string>
+    <string name="download_csv_file">download CSV-File</string>
+    <string name="l_schen">Löschen</string>
+    <string name="get_all_Records">alle Records laden</string>
 </resources>

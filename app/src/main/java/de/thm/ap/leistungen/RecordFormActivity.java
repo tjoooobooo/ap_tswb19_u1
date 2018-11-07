@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 
+import de.thm.ap.leistungen.Stats.StatsTask;
 import de.thm.ap.leistungen.data.AppDatabase;
 import de.thm.ap.leistungen.data.RecordFileDAO;
 import de.thm.ap.leistungen.model.Record;
@@ -33,6 +35,7 @@ public class RecordFormActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTitle(R.string.add);
         setContentView(R.layout.activity_record_form);
         // Show up button in action bar
         Optional.ofNullable(getSupportActionBar())
@@ -72,6 +75,13 @@ public class RecordFormActivity extends AppCompatActivity{
                         for (Record r : recordsFilled) setFields(r);
                     });
         }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu
+        // This adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.record_form_menu, menu);
+        return true;
     }
 
     public void onSave(View view) {
@@ -160,6 +170,8 @@ public class RecordFormActivity extends AppCompatActivity{
             case android.R.id.home:
                 finish();
                 return true;
+            case R.id.action_find_modules:
+
         }
         return super.onOptionsItemSelected(item);
     }
@@ -188,4 +200,5 @@ public class RecordFormActivity extends AppCompatActivity{
         }
         year.setSelection(pos);
     }
+
 }
