@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/lightGray"
+    android:minHeight="?android:listPreferredItemHeight"
+    android:padding="15dp">
+
+    <TextView
+        android:id="@+id/record_count"
+        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:textStyle="bold"
+        android:textAppearance="?android:textAppearanceListItem"/>
+    <TextView
+        android:id="@+id/progress_text"
+        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_below="@id/record_count"
+        android:textAppearance="?android:textAppearanceListItemSmall"
+        android:text="@string/progress_text"/>
+    <ProgressBar
+        android:id="@+id/average_mark_progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:indeterminateTint="#fc3c15"
+        android:textAppearance="?android:textAppearanceListItem"
+        android:layout_centerVertical="true" />
+    <LinearLayout
+        android:id="@+id/show_details"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_below="@id/record_count"
+        android:orientation="horizontal"
+        android:textAppearance="?android:textAppearanceListItemSmall">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/show_details"
+            android:textAppearance="?android:textAppearanceListItemSmall"
+            android:textColor="?android:textColorHint"
+            android:drawableRight="@drawable/ic_assessment_black_24dp"
+            android:drawablePadding="2dp"/>
+    </LinearLayout>
+    <TextView android:id="@+id/average_mark"
+        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:textStyle="bold"
+        android:textAppearance="?android:textAppearanceListItem" />
+
+</RelativeLayout>

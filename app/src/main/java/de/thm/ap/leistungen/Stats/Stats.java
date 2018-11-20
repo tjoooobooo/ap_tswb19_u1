@@ -64,7 +64,7 @@ public class Stats {
         return sumHalfWeighted;
     }
 
-    private int getAverageMark() {
+    public int getAverageMark() {
         int points = 0;
         int avarageMark = 0;
         for(Record record : records) {
@@ -82,5 +82,9 @@ public class Stats {
             avarageMark = avarageMark /points;
         } else avarageMark = 0;
         return avarageMark;
+    }
+
+    public List<Record> getRecords(){
+        return records;
     }
 }

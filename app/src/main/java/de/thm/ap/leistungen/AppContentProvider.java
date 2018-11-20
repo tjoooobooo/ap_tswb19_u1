@@ -11,7 +11,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.CancellationSignal;
 import android.os.ParcelFileDescriptor;
-import android.util.Log;
 
 import com.opencsv.CSVWriter;
 

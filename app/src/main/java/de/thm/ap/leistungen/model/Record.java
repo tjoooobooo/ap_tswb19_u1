@@ -5,7 +5,7 @@ import android.arch.persistence.room.PrimaryKey;
 
 import java.io.Serializable;
 @Entity
-public class Record implements Serializable {
+public class Record implements Serializable, Comparable {
     @PrimaryKey
     private Integer id;
     private Integer crp, mark, year;
@@ -21,6 +21,14 @@ public class Record implements Serializable {
         this.year = year;
         this.summerTerm = summerTerm;
         this.halfWeighted = halfWeighted;
+        hasPassed = true;
+        hasMark = true;
+    }
+    public Record(String moduleNum, String moduleName,Integer crp ){
+        id = null;
+        this.crp = crp;
+        this.moduleNum = moduleNum;
+        this.moduleName = moduleName;
         hasPassed = true;
         hasMark = true;
     }
@@ -111,5 +119,10 @@ public class Record implements Serializable {
         String output = moduleName + " " + moduleNum + " (";
         if(hasMark()) output += mark + "% ";
         return output + crp + "crp" +")";
+    }
+
+    @Override
+    public int compareTo(Object r2) {
+        return getModuleName().compareTo(((Record)r2).getModuleName());
     }
 }

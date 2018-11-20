@@ -1,10 +1,15 @@
 package de.thm.ap.leistungen;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,13 +19,16 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 
-import de.thm.ap.leistungen.Stats.StatsTask;
 import de.thm.ap.leistungen.data.AppDatabase;
-import de.thm.ap.leistungen.data.RecordFileDAO;
+import de.thm.ap.leistungen.data.ModuleDAO;
+import de.thm.ap.leistungen.model.Module;
 import de.thm.ap.leistungen.model.Record;
 
 public class RecordFormActivity extends AppCompatActivity{
@@ -31,6 +39,8 @@ public class RecordFormActivity extends AppCompatActivity{
     private Spinner year;
 
     private Integer record_ex = null;
+    private Dialog dialog = null;
+    private ModuleDAO moduleDAO = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +82,12 @@ public class RecordFormActivity extends AppCompatActivity{
             Executors.newSingleThreadExecutor()
                     .submit(() -> {
                         List<Record> recordsFilled = AppDatabase.getDb(ctx).recordDAO().findById(record_ex);
+                        Collections.sort(recordsFilled);
                         for (Record r : recordsFilled) setFields(r);
                     });
         }
+        moduleDAO = new ModuleDAO(this);
+        dialog = onCreateDialog(savedInstanceState);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -134,7 +147,6 @@ public class RecordFormActivity extends AppCompatActivity{
         if(record.getMark() == null){
             record.setHasMark(false);
         } else if(record.getMark() < 50){
-            //TODO set wenn bestanden bei änderung wichtig
             record.setHasPassed(false);
         } else if(record.getMark() > 100) {
             markProzent.setError(getString(R.string.mark_not_valid));
@@ -171,6 +183,7 @@ public class RecordFormActivity extends AppCompatActivity{
                 finish();
                 return true;
             case R.id.action_find_modules:
+                dialog.show();
 
         }
         return super.onOptionsItemSelected(item);
@@ -200,5 +213,26 @@ public class RecordFormActivity extends AppCompatActivity{
         }
         year.setSelection(pos);
     }
+    @SuppressLint("SetTextI18n")
+    private void setFields(Module module){
+        moduleNum.setText(module.getNr());
+        creditPoints.setText(module.getCrp().toString());
+        moduleName.setText(module.getName());
+    }
 
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        List<Module> moduleList = moduleDAO.findAll();
+        String[] modulNames = new String[moduleList.size()];
+        for(int i = 0; i < modulNames.length; i++) {
+            modulNames[i] = moduleList.get(i).getName();
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.choose_module))
+                .setItems(modulNames, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        setFields(moduleList.get(which));
+                    }
+                });
+        return builder.create();
+    }
 }

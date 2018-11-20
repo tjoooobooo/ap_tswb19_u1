@@ -56,4 +56,8 @@ public class StatsTask extends AsyncTask<List<Record>, Void, Stats> {
                 .setNeutralButton(R.string.close, null)
                 .show();
     }
+
+    public void showStats() {
+
+    }
 }

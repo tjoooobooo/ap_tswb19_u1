@@ -5,10 +5,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".RecordsActivity">
     <item
-        android:id="@+id/action_add"
-        android:icon="@drawable/ic_add_black_24dp"
-        app:showAsAction="ifRoom"
-        android:title="@string/add"/>
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_search_black_24dp"
+        android:title="@string/action_search"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="collapseActionView|always"/>
     <item
         android:id="@+id/action_stats"
         app:showAsAction="never"

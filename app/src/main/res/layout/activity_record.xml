@@ -33,5 +33,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="bottom|right"
+        android:padding="8dp">
+        <ImageButton
+            android:id="@+id/add_record_imagebutton"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@drawable/circle"
+            android:src="@drawable/ic_add_black_24dp"/>
+
+    </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>
